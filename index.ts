@@ -1,9 +1,11 @@
 import { promises as fs } from "fs";
 import * as path from "path";
 
+type LanguageCode = "en" | "es" | "fr";
+
 interface Message {
 	speaker: string;
-	text: string;
+	text: Record<"en" & Partial<LanguageCode>, string>;
 }
 interface Dialogue {
 	sequence?: string;
@@ -43,7 +45,7 @@ async function readFiles(dir: string): Promise<Dialogue[]> {
 								}
 								return {
 									speaker,
-									text: split[1],
+									text: { en: split[1] },
 								};
 							}),
 					});
@@ -56,7 +58,7 @@ async function readFiles(dir: string): Promise<Dialogue[]> {
 							dialogues.push({
 								context: v.context,
 								sequence: v.sequence,
-								messages: v.dialogue.map((d: string) => ({ speaker: d.split("|")[0], message: d.split("|")[1] })),
+								messages: v.dialogue.map((d: string) => ({ speaker: d.split("|")[0], text: { en: d.split("|")[1] } })),
 							});
 						});
 				}
@@ -64,14 +66,15 @@ async function readFiles(dir: string): Promise<Dialogue[]> {
 		}
 	}
 	await readFilesInner(dir);
-
 	return dialogues;
 }
 
 async function main() {
 	const dialogues = await readFiles("../starlessumbra/starlessumbra/datafiles");
-	await fs.writeFile("output.json", JSON.stringify(dialogues));
-	console.log("Done! ", dialogues.length, " total events discovered");
+	const markedDialogues = dialogues.filter((d) => d.sequence).sort((d1, d2) => d1.sequence!.localeCompare(d2.sequence!));
+	console.log(`${markedDialogues.length}/${dialogues.length} events marked.`);
+	await fs.writeFile("output.json", JSON.stringify(markedDialogues));
+	console.log("Done!");
 }
 
 main();
