@@ -1,11 +1,11 @@
-import { ScribeContent } from '@/components/ScribeContent/ScribeContent';
 import { ColorSchemeToggle } from '@/components/ColorSchemeToggle/ColorSchemeToggle';
+import { Sequences } from '@/components/Sequences/Sequences';
 
 export default function HomePage() {
   return (
     <>
       <ColorSchemeToggle />
-      <ScribeContent />
+      <Sequences />
     </>
   );
 }

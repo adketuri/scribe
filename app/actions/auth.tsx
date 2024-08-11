@@ -1,8 +1,9 @@
 'use server';
 
 import { redirect } from 'next/navigation';
+import { cookies } from 'next/headers';
 import { SignupFormSchema, FormState } from '@/app/lib/definitions';
-import { createSession, deleteSession } from '../lib/session';
+import { createSession, decrypt, deleteSession } from '../lib/session';
 
 export async function login(state: FormState, formData: FormData) {
   const validatedFields = SignupFormSchema.safeParse({
@@ -21,6 +22,14 @@ export async function login(state: FormState, formData: FormData) {
 
   await createSession(username);
   return redirect('/');
+}
+
+export async function assertAuthenticated() {
+  const cookie = cookies().get('session')?.value;
+  const session = await decrypt(cookie);
+  if (!session?.username) {
+    throw new Error('Unauthorized access');
+  }
 }
 
 export async function logout() {
