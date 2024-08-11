@@ -37,8 +37,10 @@ export function Login() {
             <Checkbox label="Remember me" />
           </Group>
           <Button type="submit" fullWidth mt="xl" disabled={pending}>
-            Sign in
+            {pending ? 'Submitting...' : 'Sign in'}
           </Button>
+          {state?.message && <p>{state.message}</p>}
+
         </form>
       </Paper>
     </Container>
