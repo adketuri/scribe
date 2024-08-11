@@ -6,7 +6,7 @@ export interface Message {
 }
 
 export interface Dialogue {
-  sequence?: string;
-  context?: string;
+  sequence: string;
+  context: string;
   messages: Message[];
 }

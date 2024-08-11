@@ -1,0 +1,41 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Sequence {
+  id        String    @id @default(uuid())
+  name      String    @unique
+  context   String
+  messages  Message[]
+}
+
+model Message {
+  id          String    @id @default(uuid())
+  order       Int
+  speaker     String
+  sequence    Sequence  @relation(fields: [sequenceId], references: [id])
+  sequenceId  String
+  texts       Text[]
+}
+
+model Lang {
+  id    String  @id
+  texts  Text[]
+}
+
+model Text {
+  id          String  @id @default(uuid())
+  language    Lang @relation(fields: [languageId], references: [id])
+  languageId  String
+  text        String
+  checked     Boolean? @default(true)
+  message     Message @relation(fields: [messageId], references: [id])
+  messageId   String
+}
+
+

@@ -21,7 +21,7 @@ export function Login() {
   return (
     <Container size={420} my={40}>
       <Title ta="center" className={classes.title}>
-        Welcome back!
+        Welcome to Scribe!
       </Title>
       <Text c="dimmed" size="sm" ta="center" mt={5}>
         Please log in with your credentials.
