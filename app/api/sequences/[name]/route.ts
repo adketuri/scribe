@@ -8,10 +8,9 @@ export async function GET(request: NextRequest, { params }: { params: { name: st
   const { name } = params;
   if (!name) throw new Error();
 
-  const sequences = await prisma.sequence.findMany({
+  const sequence = await prisma.sequence.findFirstOrThrow({
     where: { name },
-    orderBy: { name: 'asc' },
     include: { messages: { include: { texts: true } } },
   });
-  return Response.json({ sequences });
+  return Response.json({ sequence });
 }

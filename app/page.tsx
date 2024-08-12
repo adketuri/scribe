@@ -1,12 +1,12 @@
 'use client';
 
-import { ColorSchemeToggle } from '@/components/ColorSchemeToggle/ColorSchemeToggle';
+import { HeaderMenu } from '@/components/HeaderMenu/HeaderMenu';
 import { Sequences } from '@/components/Sequences/Sequences';
 
 export default function HomePage() {
   return (
     <>
-      <ColorSchemeToggle />
+      <HeaderMenu />
       <Sequences />
     </>
   );

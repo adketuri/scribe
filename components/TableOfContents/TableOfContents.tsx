@@ -7,12 +7,11 @@ import useSWR from 'swr';
 import classes from './TableOfContents.module.css';
 import { fetcher } from '@/app/lib/fetcher';
 import { GetSequencesResponse } from '@/types/api';
+import { useHashedSequence } from '@/app/hooks/useHashedSequence';
 
 // const links = [
 //   { label: 'Act I', link: '#usage', order: 1 },
 // ];
-
-const active = '#overlays';
 
 const secondaryNames = [
   'Tulron Outskirts',
@@ -30,6 +29,9 @@ function TableOfContentsSection({ name, children }: { name: string, children: an
 }
 
 export function TableOfContents() {
+  const sequenceName = useHashedSequence();
+  const active = `#${sequenceName}`;
+
   const { data } = useSWR<GetSequencesResponse>('/api/sequences', fetcher);
   const links = data?.sequences.map((seq) =>
     ({ label: seq.name, context: seq.context, link: seq.name, order: 1 }));

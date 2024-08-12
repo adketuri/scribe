@@ -1,24 +1,21 @@
 'use client';
 
-import { Container, Group, Text } from '@mantine/core';
-import useSWR from 'swr';
-import { fetcher } from '@/app/lib/fetcher';
-import { GetSequencesResponse } from '@/types/api';
+import { Button, Container, Drawer } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
 import { TableOfContents } from '../TableOfContents/TableOfContents';
-import { useHashedSequence } from '@/app/hooks/useHashedSequence';
+import { ActiveSequence } from '../ActiveSequence/ActiveSequence';
 
 export function Sequences() {
-  const sequence = useHashedSequence();
-
-  const { data, error } = useSWR<GetSequencesResponse>(`/api/sequences/${sequence}`, fetcher);
-
-  if (error) return <Container>OOPS</Container>;
+  const [opened, { open, close }] = useDisclosure(false);
 
   return (
-    <Container>
-      <Group>
+    <>
+      <Drawer opened={opened} onClose={close} title="Table of Contents">
         <TableOfContents />
-        <Text>{JSON.stringify(data)}</Text>
-      </Group>
-    </Container>);
+      </Drawer>
+      <Container size="sm">
+        <Button onClick={open}>Open Drawer</Button>
+        <ActiveSequence />
+      </Container>
+    </>);
 }
