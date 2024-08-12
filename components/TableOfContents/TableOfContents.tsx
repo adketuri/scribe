@@ -56,8 +56,8 @@ export function TableOfContents() {
             {group.map((item) => (
               <Box<'a'>
                 component="a"
-                href={item.link}
-                onClick={(event) => event.preventDefault()}
+                href={`#${item.link}`}
+                // onClick={(event) => event.preventDefault()}
                 key={item.label}
                 className={cx(classes.link, { [classes.linkActive]: active === item.link })}
                 style={{ paddingLeft: `calc(${item.order} * var(--mantine-spacing-md))` }}
