@@ -1,9 +1,10 @@
 'use client';
 
-import { Button, Container, Drawer } from '@mantine/core';
+import { Container, Drawer } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { TableOfContents } from '../TableOfContents/TableOfContents';
 import { ActiveSequence } from '../ActiveSequence/ActiveSequence';
+import { SequenceNavigator } from '../SequenceNavigator/SequenceNavigator';
 
 export function Sequences() {
   const [opened, { open, close }] = useDisclosure(false);
@@ -14,8 +15,9 @@ export function Sequences() {
         <TableOfContents />
       </Drawer>
       <Container size="sm">
-        <Button onClick={open}>Open Drawer</Button>
+        <SequenceNavigator onOpenTableOfContents={open} />
         <ActiveSequence />
+        <SequenceNavigator onOpenTableOfContents={open} />
       </Container>
     </>);
 }

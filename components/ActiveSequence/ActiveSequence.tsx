@@ -1,6 +1,6 @@
 'use client';
 
-import { Box, Card, Container, Grid, Blockquote, Text } from '@mantine/core';
+import { Box, Card, Container, Grid, Blockquote, Text, Loader } from '@mantine/core';
 import useSWR from 'swr';
 import { useHashedSequence } from '@/app/hooks/useHashedSequence';
 import { fetcher } from '@/app/lib/fetcher';
@@ -17,7 +17,7 @@ export function ActiveSequence() {
   const { data, error } = useSWR<GetSequenceResponse>(`/api/sequences/${sequenceName}`, fetcher);
 
   if (error) return <Container>OOPS</Container>;
-  if (!data?.sequence) return <>Loading</>;
+  if (!data?.sequence) return <Loader />;
 
   const { sequence } = data;
   return (

@@ -1,6 +1,6 @@
 'use client';
 
-import { Menu, Group, Center, Burger, Container, Box } from '@mantine/core';
+import { Menu, Group, Center, Container, Box } from '@mantine/core';
 import { IconChevronDown } from '@tabler/icons-react';
 import classes from './HeaderMenu.module.css';
 import { ColorSchemeToggle } from '../ColorSchemeToggle/ColorSchemeToggle';
@@ -44,7 +44,7 @@ export function HeaderMenu() {
     return (
       <a
         key={link.label}
-        href={link.link}
+        href="#"
         className={classes.link}
         onClick={(event) => event.preventDefault()}
       >
@@ -58,7 +58,7 @@ export function HeaderMenu() {
       <Container>
         <div className={classes.inner}>
           <Box>
-            Logo
+            Scribe
           </Box>
           <Group>
             <Group gap={5}>
