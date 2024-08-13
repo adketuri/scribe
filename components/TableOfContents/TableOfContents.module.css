@@ -1,4 +1,14 @@
+.heading {
+  background-color: light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-6));
+  padding: 16px;
+}
+
+.subheading {
+  background-color: light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-7));
+}
+
 .link {
+  background-color: light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-8));
   display: block;
   text-decoration: none;
   color: var(--mantine-color-text);
@@ -18,6 +28,7 @@
   font-weight: 500;
   border-left-color: light-dark(var(--mantine-color-blue-6), var(--mantine-color-blue-4));
   color: light-dark(var(--mantine-color-blue-6), var(--mantine-color-blue-4));
+  background-color: red;
 
   &,
   &:hover {

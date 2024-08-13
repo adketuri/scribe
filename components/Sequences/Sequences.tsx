@@ -13,9 +13,18 @@ export function Sequences() {
   return (
     <>
       <HeaderMenu onClickHeader={open} />
-      <Drawer opened={opened} onClose={close} title="Table of Contents">
-        <TableOfContents />
-      </Drawer>
+      <Drawer.Root opened={opened} onClose={close}>
+        <Drawer.Overlay />
+        <Drawer.Content>
+          <Drawer.Header>
+            <Drawer.Title>Table of Contents</Drawer.Title>
+            <Drawer.CloseButton />
+          </Drawer.Header>
+          <Drawer.Body p={0} m={0}>
+            <TableOfContents onLinkSelected={close} />
+          </Drawer.Body>
+        </Drawer.Content>
+      </Drawer.Root>
       <Container size="sm">
         <ActiveSequence />
         <SequenceNavigator onOpenTableOfContents={open} />

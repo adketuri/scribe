@@ -21,16 +21,20 @@ const secondaryNames = [
   'Tulron Train',
   'N/A'];
 
-function TableOfContentsSection({ name, children }: { name: string, children: any }) {
+function TableOfContentsSection({ name, defaultOpened, children }:
+  { name: string, defaultOpened: boolean, children: React.ReactNode }) {
   return (
-    <NavLink label={name} variant="filled" childrenOffset={0}>
+    <NavLink className={classes.subheading} label={name} variant="filled" childrenOffset={0} defaultOpened={defaultOpened}>
       {children}
     </NavLink>);
 }
 
-export function TableOfContents() {
+interface TableOfContentsProps {
+  onLinkSelected: () => void
+}
+
+export function TableOfContents({ onLinkSelected }: TableOfContentsProps) {
   const sequenceName = useHashedSequence();
-  const active = `#${sequenceName}`;
 
   const { data } = useSWR<GetSequencesResponse>('/api/sequences', fetcher);
   const links = data?.sequences.map((seq) =>
@@ -48,20 +52,23 @@ export function TableOfContents() {
 
   return (
     <Box>
-      <Group p="sm" bg="gray">
+      <Group className={classes.heading}>
         <IconBook style={{ width: rem(18), height: rem(18) }} stroke={1.5} />
         <Text size="lg">Act I</Text>
       </Group>
       {linkGroups.map((group, i) => (
         <Box key={i} ml={0}>
-          <TableOfContentsSection name={secondaryNames[i]}>
+          <TableOfContentsSection
+            name={secondaryNames[i]}
+            defaultOpened={group.some(({ link }) => link === sequenceName)}
+          >
             {group.map((item) => (
               <Box<'a'>
                 component="a"
                 href={`#${item.link}`}
-                // onClick={(event) => event.preventDefault()}
+                onClick={onLinkSelected}
                 key={item.label}
-                className={cx(classes.link, { [classes.linkActive]: active === item.link })}
+                className={cx(classes.link, { [classes.linkActive]: sequenceName === item.link })}
                 style={{ paddingLeft: `calc(${item.order} * var(--mantine-spacing-md))` }}
               >
                 <Text size="sm">{item.label}</Text>
