@@ -17,7 +17,6 @@ export function Sequences() {
         <TableOfContents />
       </Drawer>
       <Container size="sm">
-        <SequenceNavigator onOpenTableOfContents={open} />
         <ActiveSequence />
         <SequenceNavigator onOpenTableOfContents={open} />
       </Container>

@@ -1,0 +1,10 @@
+.group {
+  background-color: light-dark(var(--mantine-color-gray-1), var(--mantine-color-gray-8));
+  height: rem(56px);
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding-left: 16px;
+  padding-right: 16px;
+}

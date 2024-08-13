@@ -6,6 +6,7 @@ import { useHashedSequence } from '@/app/hooks/useHashedSequence';
 import { fetcher } from '@/app/lib/fetcher';
 import { GetSequenceResponse } from '@/types/api';
 import { useLanguage } from '@/app/hooks/useLanguage';
+import { SequenceMessage } from '../SequenceMessage/SequenceMessage';
 
 function formatSpeaker(speaker: string): string {
   if (speaker === 'noone') return '';
@@ -24,7 +25,7 @@ export function ActiveSequence() {
 
   const { sequence } = data;
   return (
-    <Box>
+    <Box py={100}>
       <Blockquote color="blue">
         {sequence.context}
       </Blockquote>
@@ -37,15 +38,12 @@ export function ActiveSequence() {
               </Text>
             </Grid.Col>
             <Grid.Col span={localize ? 5 : 10}>
-              <Text>
-                {texts.find(t => t.languageId === 'en')?.text.replaceAll('|', '\n')}
-              </Text>
+              <SequenceMessage texts={texts} language="en" />
+
             </Grid.Col>
             {localize &&
               <Grid.Col span={localize ? 5 : 10}>
-                <Text>
-                  {texts.find(t => t.languageId === language.id)?.text.replaceAll('|', '\n')}
-                </Text>
+                <SequenceMessage texts={texts} language={language.id} editable />
               </Grid.Col>}
           </Grid>
         </Card>))}

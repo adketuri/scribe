@@ -13,7 +13,6 @@ interface HeaderMenuProps {
 
 export function HeaderMenu({ onClickHeader }: HeaderMenuProps) {
   const { language, languages, setLanguage, isLoading } = useLanguage();
-  console.log('!AK', language, languages);
   if (isLoading || !language) return <Loader />;
   const links = [
     {
@@ -66,16 +65,16 @@ export function HeaderMenu({ onClickHeader }: HeaderMenuProps) {
     <header className={classes.header}>
       <Container>
         <div className={classes.inner}>
-          <Group onClick={onClickHeader} style={{ cursor: 'pointer' }}>
+          <Group onClick={onClickHeader} style={{ cursor: 'pointer' }} wrap="nowrap">
             <Image
               src="/scribe.png"
               width={50}
               height={50}
               alt="Logo"
             />
-            <Title visibleFrom="xs">Scribe</Title>
+            <Title>Scribe</Title>
           </Group>
-          <Group>
+          <Group wrap="nowrap">
             <Group gap={5}>
               {items}
             </Group>
