@@ -1,11 +1,13 @@
 'use client';
 
-import { Menu, Group, Center, Container, Box } from '@mantine/core';
+import { Menu, Group, Center, Container, Title } from '@mantine/core';
 import { IconChevronDown } from '@tabler/icons-react';
+import Image from 'next/image';
 import classes from './HeaderMenu.module.css';
 import { ColorSchemeToggle } from '../ColorSchemeToggle/ColorSchemeToggle';
 
 const links = [
+  { label: 'Home' },
   {
     label: 'Language',
     links: [
@@ -15,7 +17,11 @@ const links = [
   },
 ];
 
-export function HeaderMenu() {
+interface HeaderMenuProps {
+  onClickHeader: () => void
+}
+
+export function HeaderMenu({ onClickHeader }: HeaderMenuProps) {
   const items = links.map((link) => {
     const menuItems = link.links?.map((item) => (
       <Menu.Item key={item.link}>{item.label}</Menu.Item>
@@ -57,9 +63,15 @@ export function HeaderMenu() {
     <header className={classes.header}>
       <Container>
         <div className={classes.inner}>
-          <Box>
-            Scribe
-          </Box>
+          <Group onClick={onClickHeader} style={{ cursor: 'pointer' }}>
+            <Image
+              src="/scribe.png"
+              width={50}
+              height={50}
+              alt="Logo"
+            />
+            <Title visibleFrom="xs">Scribe</Title>
+          </Group>
           <Group>
             <Group gap={5}>
               {items}
