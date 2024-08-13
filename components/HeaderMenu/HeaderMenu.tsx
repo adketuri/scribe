@@ -1,30 +1,33 @@
 'use client';
 
-import { Menu, Group, Center, Container, Title } from '@mantine/core';
+import { Menu, Group, Center, Container, Title, Loader } from '@mantine/core';
 import { IconChevronDown } from '@tabler/icons-react';
 import Image from 'next/image';
 import classes from './HeaderMenu.module.css';
 import { ColorSchemeToggle } from '../ColorSchemeToggle/ColorSchemeToggle';
-
-const links = [
-  { label: 'Home' },
-  {
-    label: 'Language',
-    links: [
-      { link: '/docs', label: 'English' },
-      { link: '/resources', label: 'Japanese' },
-    ],
-  },
-];
+import { useLanguage } from '@/app/hooks/useLanguage';
 
 interface HeaderMenuProps {
   onClickHeader: () => void
 }
 
 export function HeaderMenu({ onClickHeader }: HeaderMenuProps) {
+  const { language, languages, setLanguage, isLoading } = useLanguage();
+  console.log('!AK', language, languages);
+  if (isLoading || !language) return <Loader />;
+  const links = [
+    {
+      label: language.id,
+      links: languages!.map((lang) => ({
+        onClick: () => setLanguage(lang),
+        label: lang.id,
+      })),
+    },
+  ];
+
   const items = links.map((link) => {
     const menuItems = link.links?.map((item) => (
-      <Menu.Item key={item.link}>{item.label}</Menu.Item>
+      <Menu.Item key={item.label} onClick={item.onClick}>{item.label}</Menu.Item>
     ));
 
     if (menuItems) {

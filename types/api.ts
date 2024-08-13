@@ -1,4 +1,4 @@
-import { Prisma, Sequence } from '@prisma/client';
+import { Lang, Prisma, Sequence } from '@prisma/client';
 
 export interface GetSequencesResponse {
   sequences: Sequence[];
@@ -10,4 +10,8 @@ export type SequenceWithMessages = Prisma.SequenceGetPayload<{
 
 export interface GetSequenceResponse {
   sequence: SequenceWithMessages;
+}
+
+export interface GetLanguagesResponse {
+  languages: Lang[];
 }

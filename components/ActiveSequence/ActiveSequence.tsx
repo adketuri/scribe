@@ -5,6 +5,7 @@ import useSWR from 'swr';
 import { useHashedSequence } from '@/app/hooks/useHashedSequence';
 import { fetcher } from '@/app/lib/fetcher';
 import { GetSequenceResponse } from '@/types/api';
+import { useLanguage } from '@/app/hooks/useLanguage';
 
 function formatSpeaker(speaker: string): string {
   if (speaker === 'noone') return '';
@@ -12,6 +13,8 @@ function formatSpeaker(speaker: string): string {
 }
 
 export function ActiveSequence() {
+  const { language } = useLanguage();
+  const localize = language && language?.id !== 'en';
   const sequenceName = useHashedSequence();
 
   const { data, error } = useSWR<GetSequenceResponse>(`/api/sequences/${sequenceName}`, fetcher);
@@ -33,11 +36,17 @@ export function ActiveSequence() {
                 {formatSpeaker(speaker)}
               </Text>
             </Grid.Col>
-            <Grid.Col span={10}>
+            <Grid.Col span={localize ? 5 : 10}>
               <Text>
                 {texts.find(t => t.languageId === 'en')?.text.replaceAll('|', '\n')}
               </Text>
             </Grid.Col>
+            {localize &&
+              <Grid.Col span={localize ? 5 : 10}>
+                <Text>
+                  {texts.find(t => t.languageId === language.id)?.text.replaceAll('|', '\n')}
+                </Text>
+              </Grid.Col>}
           </Grid>
         </Card>))}
     </Box>
