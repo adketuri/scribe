@@ -1,4 +1,15 @@
-import { Lang, Prisma, Sequence } from '@prisma/client';
+import { Lang, Message, Prisma, Sequence } from '@prisma/client';
+
+export type SequencesWithMessages = Prisma.SequenceGetPayload<{
+  include: { messages: { include: { texts: { where: { languageId: string } } } } };
+}>;
+
+export interface GetOutputResponse {
+  sequences: SequencesWithMessages[];
+}
+
+export type TransformedMessage = Omit<Message, 'id' | 'sequenceId' | 'order'> & { text: string };
+export type TransformedOutput = Record<string, Array<TransformedMessage>>;
 
 export interface GetSequencesResponse {
   sequences: Sequence[];

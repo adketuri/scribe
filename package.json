@@ -18,7 +18,8 @@
     "storybook": "storybook dev -p 6006",
     "storybook:build": "storybook build",
     "db:seed": "npx ts-node scripts/seed.ts",
-    "db:reset": "npx prisma db push --force-reset"
+    "db:reset": "npx prisma db push --force-reset",
+    "pull": "npx ts-node scripts/pull-game.ts"
   },
   "dependencies": {
     "@mantine/core": "^7.12.0",

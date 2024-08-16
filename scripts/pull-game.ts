@@ -22,8 +22,8 @@ async function readFiles(initialDir: string): Promise<Dialogue[]> {
           const context = lines.find((l) => l.includes('Context:'));
           const sequence = lines.find((l) => l.includes('Sequence:'));
           dialogues.push({
-            context: context?.split(':')[1].trim(),
-            sequence: sequence?.split(':')[1].trim(),
+            context: context?.split(':')[1].trim() || 'missing',
+            sequence: sequence?.split(':')[1].trim() || 'missing',
             messages: lines
               .filter((l) => l.startsWith('show_message'))
               .map((l) => {
@@ -67,7 +67,7 @@ async function main() {
     .filter((d) => d.sequence)
     .sort((d1, d2) => d1.sequence!.localeCompare(d2.sequence!));
   console.log(`${markedDialogues.length}/${dialogues.length} events marked.`);
-  await fs.writeFile('output.json', JSON.stringify(markedDialogues));
+  await fs.writeFile('../su-output.json', JSON.stringify(markedDialogues, null, 2));
   console.log('Done!');
 }
 
