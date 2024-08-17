@@ -10,17 +10,19 @@ async function readFiles(initialDir: string): Promise<Dialogue[]> {
     for (const file of files) {
       const filePath = path.join(dir, file);
       const stats = await fs.stat(filePath);
-
       if (stats.isDirectory()) {
         await readFilesInner(filePath);
       } else if (stats.isFile()) {
         if (file.endsWith('.txt')) {
           const data = await fs.readFile(filePath, 'utf8');
           const lines = data.split('\n');
-          if (!lines.some((l) => l.startsWith('show_message'))) return;
+          // eslint-disable-next-line no-continue
+          if (!lines.some((l) => l.includes('show_message'))) continue;
+
           // show_message("Your arrogance will be your downfall.", esteri)
           const context = lines.find((l) => l.includes('Context:'));
           const sequence = lines.find((l) => l.includes('Sequence:'));
+
           dialogues.push({
             context: context?.split(':')[1].trim() || 'missing',
             sequence: sequence?.split(':')[1].trim() || 'missing',
@@ -62,10 +64,11 @@ async function readFiles(initialDir: string): Promise<Dialogue[]> {
 }
 
 async function main() {
-  const dialogues = await readFiles('../starlessumbra/starlessumbra/datafiles');
+  const dialogues = await readFiles('../starlessumbra/starlessumbra/datafiles/');
   const markedDialogues = dialogues
     .filter((d) => d.sequence)
-    .sort((d1, d2) => d1.sequence!.localeCompare(d2.sequence!));
+    .sort((d1, d2) => d1.sequence!.localeCompare(d2.sequence!))
+    .filter((d) => d.sequence !== 'missing');
   console.log(`${markedDialogues.length}/${dialogues.length} events marked.`);
   await fs.writeFile('../su-output.json', JSON.stringify(markedDialogues, null, 2));
   console.log('Done!');

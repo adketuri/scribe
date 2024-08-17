@@ -29,9 +29,22 @@ export function Login() {
 
       <Paper withBorder shadow="md" p={30} mt={30} radius="md">
         <form action={action}>
-          <TextInput id="username" name="username" label="Username" placeholder="Your username" required />
+          <TextInput
+            id="username"
+            name="username"
+            label="Username"
+            placeholder="Your username"
+            required
+          />
           {state?.errors?.username && <p>{state.errors.username}</p>}
-          <PasswordInput id="password" name="password" label="Password" placeholder="Your password" required mt="md" />
+          <PasswordInput
+            id="password"
+            name="password"
+            label="Password"
+            placeholder="Your password"
+            required
+            mt="md"
+          />
           {state?.errors?.password && <p>{state.errors.password}</p>}
           <Group justify="space-between" mt="lg">
             <Checkbox label="Remember me" />
@@ -40,7 +53,6 @@ export function Login() {
             {pending ? 'Submitting...' : 'Sign in'}
           </Button>
           {state?.message && <p>{state.message}</p>}
-
         </form>
       </Paper>
     </Container>

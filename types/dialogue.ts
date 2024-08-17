@@ -1,8 +1,9 @@
-export type LanguageCode = 'en' | 'es' | 'fr';
+export type LanguageCode = 'en' | 'es' | 'fr' | 'ja';
 
+export type TextRecord = Partial<Record<LanguageCode, string>>;
 export interface Message {
   speaker: string;
-  text: Record<'en' & Partial<LanguageCode>, string>;
+  text: TextRecord;
 }
 
 export interface Dialogue {

@@ -19,6 +19,7 @@
     "storybook:build": "storybook build",
     "db:seed": "npx ts-node scripts/seed.ts",
     "db:reset": "npx prisma db push --force-reset",
+    "db:generate": "npx prisma generate",
     "pull": "npx ts-node scripts/pull-game.ts"
   },
   "dependencies": {

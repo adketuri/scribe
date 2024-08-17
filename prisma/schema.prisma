@@ -18,7 +18,7 @@ model Message {
   id          String    @id @default(uuid())
   order       Int
   speaker     String
-  sequence    Sequence  @relation(fields: [sequenceId], references: [id])
+  sequence    Sequence  @relation(fields: [sequenceId], references: [id], onDelete: Cascade)
   sequenceId  String
   texts       Text[]
 }
@@ -34,7 +34,7 @@ model Text {
   languageId  String
   text        String
   checked     Boolean? @default(true)
-  message     Message @relation(fields: [messageId], references: [id])
+  message     Message @relation(fields: [messageId], references: [id], onDelete: Cascade)
   messageId   String
 }
 
