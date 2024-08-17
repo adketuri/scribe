@@ -11,6 +11,7 @@ model Sequence {
   id        String    @id @default(uuid())
   name      String    @unique
   context   String
+  editable  Boolean   @default(false)
   messages  Message[]
 }
 

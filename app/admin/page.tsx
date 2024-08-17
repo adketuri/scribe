@@ -1,8 +1,9 @@
 'use client';
 
-import { Button, Divider, FileInput } from '@mantine/core';
+import { Button, Container, Divider, FileInput } from '@mantine/core';
 import axios from 'axios';
-import { useActionState } from 'react';
+import { useActionState, useEffect, useState } from 'react';
+import { redirect, useSearchParams } from 'next/navigation';
 import { GetOutputResponse, TransformedOutput } from '@/types/api';
 import { useLanguage } from '../hooks/useLanguage';
 import { importDialogue } from '../actions/import';
@@ -31,10 +32,19 @@ async function download(id: string) {
 
 export default function AdminPage() {
   const { languages } = useLanguage();
-  const [state, action, pending] = useActionState(importDialogue, undefined);
+  const [, action, pending] = useActionState(importDialogue, undefined);
+  const [value, setValue] = useState<File | null>(null);
 
+  const searchParams = useSearchParams();
+  const reset = searchParams.get('reset');
+  useEffect(() => {
+    if (reset) {
+      setValue(null);
+      redirect('/admin');
+    }
+  }, [reset]);
   return (
-    <>
+    <Container size="xs">
       {languages?.map(({ id }) => (
         <Button key={id} onClick={() => download(id)}>
           Download ({id})
@@ -48,11 +58,13 @@ export default function AdminPage() {
           placeholder="Upload json"
           id="dialogue"
           name="dialogue"
+          value={value}
+          onChange={setValue}
         />
-        <Button type="submit" mt="xl" disabled={pending}>
+        <Button type="submit" mt="xl" disabled={pending || !value}>
           {pending ? 'Submitting...' : 'Upload'}
         </Button>
       </form>
-    </>
+    </Container>
   );
 }

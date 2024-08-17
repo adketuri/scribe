@@ -7,6 +7,10 @@ import { ScribeDialogue } from '../ScribeDialogue/ScribeDialogue';
 const primaryNames = {
   1: 'Act I',
   2: 'Act II',
+  3: 'Act III',
+  4: 'Act IV',
+  5: 'Act V',
+  misc: 'Misc',
 };
 
 const secondaryNames = {
@@ -41,7 +45,7 @@ function checkSection(
 export function ScribeContent() {
   let lastPrimary = 0;
   let lastSecondary = 0;
-  const allDialogue: Dialogue[] = [];//rawDialogue;
+  const allDialogue: Dialogue[] = []; //rawDialogue;
   const children: JSX.Element[] = [];
   allDialogue.forEach(({ context, sequence, messages }) => {
     if (sequence) {
