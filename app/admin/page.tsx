@@ -7,6 +7,7 @@ import { redirect, useSearchParams } from 'next/navigation';
 import { GetOutputResponse, TransformedOutput } from '@/types/api';
 import { useLanguage } from '../hooks/useLanguage';
 import { importDialogue } from '../actions/import';
+import { logout } from '../actions/auth';
 
 async function download(id: string) {
   const response = await axios.get<GetOutputResponse>(`api/output/${id}`, {
@@ -37,6 +38,9 @@ export default function AdminPage() {
 
   const searchParams = useSearchParams();
   const reset = searchParams.get('reset');
+
+  const [, logoutAction, logoutPending] = useActionState(logout, undefined);
+
   useEffect(() => {
     if (reset) {
       setValue(null);
@@ -63,6 +67,11 @@ export default function AdminPage() {
         />
         <Button type="submit" mt="xl" disabled={pending || !value}>
           {pending ? 'Submitting...' : 'Upload'}
+        </Button>
+      </form>
+      <form action={logoutAction}>
+        <Button type="submit" mt="xl" disabled={logoutPending}>
+          {logoutPending ? 'Submitting...' : 'Logout'}
         </Button>
       </form>
     </Container>

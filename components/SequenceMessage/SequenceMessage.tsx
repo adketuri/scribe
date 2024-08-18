@@ -5,41 +5,44 @@ import axios from 'axios';
 import { useEffect, useRef, useState } from 'react';
 
 interface SequenceMessageProps {
-  texts: TextRecord[],
-  language: string,
-  editable?: boolean,
+  texts: TextRecord[];
+  languageId: string;
+  messageId: string;
+  editable?: boolean;
 }
-export function SequenceMessage({ texts, language, editable }: SequenceMessageProps) {
-  const textRecord = texts.find(t => t.languageId === language);
+export function SequenceMessage({
+  texts,
+  languageId: language,
+  messageId,
+  editable,
+}: SequenceMessageProps) {
+  const textRecord = texts.find((t) => t.languageId === language);
 
-  if (!textRecord) throw new Error(`Could not find text record with language ${language}`);
-
-  const { id, text } = textRecord;
-
-  const [textContents, setTextContents] = useState(text);
-  const [debouncedText] = useDebouncedValue(textContents, 2000);
+  //if (!textRecord) throw new Error(`Could not find text record with language ${language}`);
+  const [id, setId] = useState(textRecord?.id);
+  const [text, setTextContents] = useState(textRecord?.text || '');
+  const [debouncedText] = useDebouncedValue(text, 2000);
   const ready = useRef<boolean>(false);
 
   useEffect(() => {
     if (!editable) return;
     if (!ready.current) {
       ready.current = true;
+    } else if (!id) {
+      axios
+        .post('api/texts', { text: debouncedText, languageId: language, messageId })
+        .then((res) => {
+          console.log('GOT RES', res);
+          setId(res.data.text.id);
+        });
     } else {
       axios.post(`api/texts/${id}`, { text: debouncedText });
     }
   }, [debouncedText]);
 
   if (editable) {
-    return <Textarea
-      value={textContents}
-      onChange={(e) => setTextContents(e.target.value)}
-      autosize
-    />;
+    return <Textarea value={text} onChange={(e) => setTextContents(e.target.value)} autosize />;
   }
 
-  return (
-    <Text>
-      {textContents}
-    </Text>
-  );
+  return <Text>{text}</Text>;
 }

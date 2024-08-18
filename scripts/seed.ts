@@ -14,7 +14,7 @@ async function main() {
   }
 
   try {
-    const editables = await prisma.sequence.createManyAndReturn({
+    await prisma.sequence.createMany({
       data: [
         {
           name: 'speakers',
@@ -26,10 +26,7 @@ async function main() {
         { name: 'skills', context: 'Skill name and descriptions', editable: true },
       ],
     });
-    console.log(
-      'Created editable sequences: ',
-      editables.map((e) => e.name)
-    );
+    console.log('Created editables');
   } catch (e) {
     console.log('Editable sequences exist, skipping');
   }

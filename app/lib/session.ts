@@ -1,12 +1,16 @@
 import 'server-only';
 import { JWTPayload, SignJWT, jwtVerify } from 'jose';
 import { cookies } from 'next/headers';
+import { Role } from '@/types/auth';
+import { LanguageCode } from '@/types/dialogue';
 
 const secretKey = process.env.SESSION_SECRET;
 const encodedKey = new TextEncoder().encode(secretKey);
 
 export interface SessionPayload extends JWTPayload {
   username: string;
+  role: Role;
+  languages: Partial<Record<LanguageCode, boolean>>;
   expiresAt: Date;
 }
 
@@ -32,7 +36,12 @@ export async function decrypt(session: string | undefined = '') {
 
 export async function createSession(username: string) {
   const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
-  const session = await encrypt({ username, expiresAt });
+  const session = await encrypt({
+    username,
+    expiresAt,
+    role: 'admin',
+    languages: { en: true, ja: true },
+  });
 
   cookies().set('session', session, {
     httpOnly: true,

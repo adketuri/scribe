@@ -29,5 +29,6 @@ export function Sequences() {
         <ActiveSequence />
         <SequenceNavigator onOpenTableOfContents={open} />
       </Container>
-    </>);
+    </>
+  );
 }
