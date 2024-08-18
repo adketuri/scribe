@@ -1,20 +1,35 @@
 'use client';
 
-import { Menu, Group, Center, Container, Title, Loader } from '@mantine/core';
+import { Menu, Group, Center, Container, Title, Loader, Drawer } from '@mantine/core';
 import { IconChevronDown } from '@tabler/icons-react';
 import Image from 'next/image';
 import classes from './HeaderMenu.module.css';
 import { ColorSchemeToggle } from '../ColorSchemeToggle/ColorSchemeToggle';
 import { useLanguage } from '@/app/hooks/useLanguage';
+import { useAuth } from '@/app/hooks/useAuth';
+import { TableOfContents } from '../TableOfContents/TableOfContents';
 
-interface HeaderMenuProps {
-  onClickHeader: () => void
+interface HeaderLink {
+  label: string;
+  links?: {
+    onClick: () => void;
+    label: string;
+  }[];
+  link?: string;
 }
 
-export function HeaderMenu({ onClickHeader }: HeaderMenuProps) {
+interface HeaderMenuProps {
+  onClickHeader?: () => void;
+  onClose?: () => void;
+  opened?: boolean;
+}
+
+export function HeaderMenu({ onClickHeader, onClose, opened = false }: HeaderMenuProps) {
   const { language, languages, setLanguage, isLoading } = useLanguage();
+  const user = useAuth();
+
   if (isLoading || !language) return <Loader />;
-  const links = [
+  const links: HeaderLink[] = [
     {
       label: language.id,
       links: languages!.map((lang) => ({
@@ -23,21 +38,25 @@ export function HeaderMenu({ onClickHeader }: HeaderMenuProps) {
       })),
     },
   ];
+  if (user?.role === 'admin') {
+    links.unshift({
+      label: 'Admin',
+      link: '/admin',
+    });
+  }
 
   const items = links.map((link) => {
     const menuItems = link.links?.map((item) => (
-      <Menu.Item key={item.label} onClick={item.onClick}>{item.label}</Menu.Item>
+      <Menu.Item key={item.label} onClick={item.onClick}>
+        {item.label}
+      </Menu.Item>
     ));
 
     if (menuItems) {
       return (
         <Menu key={link.label} trigger="hover" transitionProps={{ exitDuration: 0 }} withinPortal>
           <Menu.Target>
-            <a
-              href="#"
-              className={classes.link}
-              onClick={(event) => event.preventDefault()}
-            >
+            <a href="#" className={classes.link} onClick={(event) => event.preventDefault()}>
               <Center>
                 <span className={classes.linkLabel}>{link.label}</span>
                 <IconChevronDown size="0.9rem" stroke={1.5} />
@@ -50,39 +69,42 @@ export function HeaderMenu({ onClickHeader }: HeaderMenuProps) {
     }
 
     return (
-      <a
-        key={link.label}
-        href="#"
-        className={classes.link}
-        onClick={(event) => event.preventDefault()}
-      >
+      <a key={link.label} href={link.link} className={classes.link}>
         {link.label}
       </a>
     );
   });
 
   return (
-    <header className={classes.header}>
-      <Container>
-        <div className={classes.inner}>
-          <Group onClick={onClickHeader} style={{ cursor: 'pointer' }} wrap="nowrap">
-            <Image
-              src="/scribe.png"
-              width={50}
-              height={50}
-              alt="Logo"
-            />
-            <Title>Scribe</Title>
-          </Group>
-          <Group wrap="nowrap">
-            <Group gap={5}>
-              {items}
+    <>
+      {onClose && (
+        <Drawer.Root opened={opened} onClose={onClose}>
+          <Drawer.Overlay />
+          <Drawer.Content>
+            <Drawer.Header>
+              <Drawer.Title>Table of Contents</Drawer.Title>
+              <Drawer.CloseButton />
+            </Drawer.Header>
+            <Drawer.Body p={0} m={0}>
+              <TableOfContents onLinkSelected={onClose} />
+            </Drawer.Body>
+          </Drawer.Content>
+        </Drawer.Root>
+      )}
+      <header className={classes.header}>
+        <Container>
+          <div className={classes.inner}>
+            <Group onClick={onClickHeader} style={{ cursor: 'pointer' }} wrap="nowrap">
+              <Image src="/scribe.png" width={50} height={50} alt="Logo" />
+              <Title>Scribe</Title>
             </Group>
-            <ColorSchemeToggle />
-          </Group>
-
-        </div>
-      </Container>
-    </header>
+            <Group wrap="nowrap">
+              <Group gap={5}>{items}</Group>
+              <ColorSchemeToggle />
+            </Group>
+          </div>
+        </Container>
+      </header>
+    </>
   );
 }

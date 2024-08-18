@@ -1,13 +1,14 @@
 'use client';
 
-import { Button, Container, Divider, FileInput } from '@mantine/core';
+import { Button, Container, Divider, FileInput, Space } from '@mantine/core';
 import axios from 'axios';
 import { useActionState, useEffect, useState } from 'react';
-import { redirect, useSearchParams } from 'next/navigation';
+import { redirect, useRouter, useSearchParams } from 'next/navigation';
 import { GetOutputResponse, TransformedOutput } from '@/types/api';
 import { useLanguage } from '../hooks/useLanguage';
 import { importDialogue } from '../actions/import';
 import { logout } from '../actions/auth';
+import { HeaderMenu } from '@/components/HeaderMenu/HeaderMenu';
 
 async function download(id: string) {
   const response = await axios.get<GetOutputResponse>(`api/output/${id}`, {
@@ -47,33 +48,39 @@ export default function AdminPage() {
       redirect('/admin');
     }
   }, [reset]);
+
+  const router = useRouter();
   return (
-    <Container size="xs">
-      {languages?.map(({ id }) => (
-        <Button key={id} onClick={() => download(id)}>
-          Download ({id})
-        </Button>
-      ))}
-      <Divider />
-      <form action={action}>
-        <FileInput
-          accept="application/json"
-          label="Upload json"
-          placeholder="Upload json"
-          id="dialogue"
-          name="dialogue"
-          value={value}
-          onChange={setValue}
-        />
-        <Button type="submit" mt="xl" disabled={pending || !value}>
-          {pending ? 'Submitting...' : 'Upload'}
-        </Button>
-      </form>
-      <form action={logoutAction}>
-        <Button type="submit" mt="xl" disabled={logoutPending}>
-          {logoutPending ? 'Submitting...' : 'Logout'}
-        </Button>
-      </form>
-    </Container>
+    <>
+      <HeaderMenu onClickHeader={() => router.push('/')} />
+      <Container size="xs">
+        <Space h={100} />
+        {languages?.map(({ id }) => (
+          <Button key={id} onClick={() => download(id)}>
+            Download ({id})
+          </Button>
+        ))}
+        <Divider />
+        <form action={action}>
+          <FileInput
+            accept="application/json"
+            label="Upload json"
+            placeholder="Upload json"
+            id="dialogue"
+            name="dialogue"
+            value={value}
+            onChange={setValue}
+          />
+          <Button type="submit" mt="xl" disabled={pending || !value}>
+            {pending ? 'Submitting...' : 'Upload'}
+          </Button>
+        </form>
+        <form action={logoutAction}>
+          <Button type="submit" mt="xl" disabled={logoutPending}>
+            {logoutPending ? 'Submitting...' : 'Logout'}
+          </Button>
+        </form>
+      </Container>
+    </>
   );
 }

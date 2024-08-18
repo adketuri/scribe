@@ -21,7 +21,7 @@ function getSequence(direction: number, sequenceName: string, sequences: Sequenc
 }
 
 interface SequenceNavigatorProps {
-  onOpenTableOfContents: () => void,
+  onOpenTableOfContents: () => void;
 }
 
 export function SequenceNavigator({ onOpenTableOfContents }: SequenceNavigatorProps) {
@@ -35,7 +35,8 @@ export function SequenceNavigator({ onOpenTableOfContents }: SequenceNavigatorPr
         component="a"
         href={`#${previous}`}
         data-disabled={!previous}
-        onClick={(event) => !previous && event.preventDefault()}>
+        onClick={(event) => !previous && event.preventDefault()}
+      >
         <IconArrowLeft />
       </Button>
       <Button onClick={onOpenTableOfContents}>Table of Contents</Button>
@@ -43,8 +44,10 @@ export function SequenceNavigator({ onOpenTableOfContents }: SequenceNavigatorPr
         component="a"
         href={`#${next}`}
         data-disabled={!next}
-        onClick={(event) => !next && event.preventDefault()}>
+        onClick={(event) => !next && event.preventDefault()}
+      >
         <IconArrowRight />
       </Button>
-    </Group>);
+    </Group>
+  );
 }
