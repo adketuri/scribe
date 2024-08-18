@@ -3,6 +3,8 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
+export const RESERVED_SEQUENCE_NAMES = ['speakers', 'ui', 'items', 'skills'];
+
 async function main() {
   try {
     const lang = await prisma.lang.createManyAndReturn({

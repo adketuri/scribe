@@ -5,6 +5,7 @@
 import { redirect } from 'next/navigation';
 import prisma from '../lib/database';
 import { Dialogue, TextRecord } from '@/types/dialogue';
+import { RESERVED_SEQUENCE_NAMES } from '@/scripts/seed';
 
 export async function importDialogue(state: any, formData: FormData) {
   const inputFile = formData.get('dialogue') as File;
@@ -22,6 +23,7 @@ export async function importDialogue(state: any, formData: FormData) {
 
   const removedSequences = sequenceRecords
     .filter((s) => !input.some((d) => d.sequence === s.name))
+    .filter((s) => !RESERVED_SEQUENCE_NAMES.includes(s.name))
     .map((s) => s.name);
   console.log('To remove record count: ', removedSequences.length);
 

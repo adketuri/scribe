@@ -110,7 +110,7 @@ function TableOfContentsSection({
       </Group>
       {linkGroups
         .filter((l) => {
-          if (l[0].label.includes('.')) {
+          if (l.length > 0 && l[0].label.includes('.')) {
             const primaryDigit = parseInt(l[0].label.split('.')[0], 10);
             return primary === primaryDigit;
           }
