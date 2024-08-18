@@ -1,6 +1,7 @@
-import { Text, Textarea } from '@mantine/core';
+import { Box, Button, Group, Text, Textarea } from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';
 import { Text as TextRecord } from '@prisma/client';
+import { IconX } from '@tabler/icons-react';
 import axios from 'axios';
 import { useEffect, useRef, useState } from 'react';
 
@@ -9,20 +10,22 @@ interface SequenceMessageProps {
   languageId: string;
   messageId: string;
   editable?: boolean;
+  mutate?: () => void;
 }
 export function SequenceMessage({
   texts,
   languageId: language,
   messageId,
   editable,
+  mutate,
 }: SequenceMessageProps) {
   const textRecord = texts.find((t) => t.languageId === language);
 
-  //if (!textRecord) throw new Error(`Could not find text record with language ${language}`);
   const [id, setId] = useState(textRecord?.id);
-  const [text, setTextContents] = useState(textRecord?.text || '');
-  const [debouncedText] = useDebouncedValue(text, 2000);
+  const [text, setText] = useState(textRecord?.text || '');
+  const [debouncedText] = useDebouncedValue(text, 1000);
   const ready = useRef<boolean>(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (!editable) return;
@@ -31,17 +34,31 @@ export function SequenceMessage({
     } else if (!id) {
       axios
         .post('api/texts', { text: debouncedText, languageId: language, messageId })
-        .then((res) => {
-          console.log('GOT RES', res);
-          setId(res.data.text.id);
-        });
+        .then((res) => setId(res.data.text.id));
     } else {
-      axios.post(`api/texts/${id}`, { text: debouncedText });
+      axios.patch(`api/texts/${id}`, { text: debouncedText });
     }
   }, [debouncedText]);
 
   if (editable) {
-    return <Textarea value={text} onChange={(e) => setTextContents(e.target.value)} autosize />;
+    return (
+      <Group>
+        <Box flex={1}>
+          <Textarea value={text} onChange={(e) => setText(e.target.value)} autosize />
+        </Box>
+        <Button
+          color="red"
+          disabled={loading}
+          onClick={() => {
+            setLoading(true);
+            axios.delete(`api/messages/${messageId}`).then(() => mutate && mutate());
+          }}
+          px={5}
+        >
+          <IconX />
+        </Button>
+      </Group>
+    );
   }
 
   return <Text>{text}</Text>;

@@ -1,20 +1,16 @@
 'use client';
 
-import { Box, Card, Container, Grid, Blockquote, Text, Loader, Button } from '@mantine/core';
+import { Box, Card, Container, Grid, Blockquote, Loader, Button } from '@mantine/core';
 import useSWR from 'swr';
 import { IconPlus } from '@tabler/icons-react';
 import axios from 'axios';
+import { useState } from 'react';
 import { useHashedSequence } from '@/app/hooks/useHashedSequence';
 import { fetcher } from '@/app/lib/fetcher';
 import { GetSequenceResponse } from '@/types/api';
 import { useLanguage } from '@/app/hooks/useLanguage';
 import { SequenceMessage } from '../SequenceMessage/SequenceMessage';
-
-function formatSpeaker(speaker: string): string | undefined {
-  if (speaker === '') return undefined;
-  if (speaker === 'noone') return '';
-  return `${speaker[0].charAt(0).toUpperCase() + speaker.slice(1)}`;
-}
+import { SequenceSpeaker } from '../SequenceSpeaker/SequenceSpeaker';
 
 export function ActiveSequence() {
   const { language } = useLanguage();
@@ -26,6 +22,8 @@ export function ActiveSequence() {
     fetcher
   );
 
+  const [loading, setLoading] = useState(false);
+
   if (error) return <Container>OOPS</Container>;
   if (!data?.sequence) return <Loader />;
 
@@ -34,10 +32,14 @@ export function ActiveSequence() {
     <Box py={100}>
       <Blockquote color="blue">{sequence.context}</Blockquote>
       {sequence.messages.map(({ speaker, texts, id }) => (
-        <Card shadow="sm" radius="md" mt={16} withBorder>
+        <Card shadow="sm" radius="md" mt={16} withBorder key={id}>
           <Grid>
-            <Grid.Col span={formatSpeaker(speaker) ? 2 : 0}>
-              <Text c="dimmed">{formatSpeaker(speaker)}</Text>
+            <Grid.Col span={2}>
+              <SequenceSpeaker
+                messageId={id}
+                editable={sequence.editable && !localize}
+                speaker={speaker}
+              />
             </Grid.Col>
             <Grid.Col span={localize ? 5 : 10}>
               <SequenceMessage
@@ -45,6 +47,7 @@ export function ActiveSequence() {
                 languageId="en"
                 messageId={id}
                 editable={sequence.editable && !localize}
+                mutate={mutate}
               />
             </Grid.Col>
             {localize && (
@@ -55,13 +58,20 @@ export function ActiveSequence() {
           </Grid>
         </Card>
       ))}
-      {sequence.editable && (
+      {sequence.editable && !localize && (
         <Button
-          onClick={() =>
-            axios.post('api/messages', { sequenceId: sequence.id }).then(() => mutate())
-          }
+          mt={15}
+          disabled={loading}
+          onClick={() => {
+            setLoading(true);
+            axios.post('api/messages', { sequenceId: sequence.id }).then(() => {
+              mutate();
+              setLoading(false);
+            });
+          }}
+          rightSection={<IconPlus size={20} />}
         >
-          <IconPlus />
+          Add Line
         </Button>
       )}
     </Box>

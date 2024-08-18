@@ -8,3 +8,11 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
   await prisma.message.delete({ where: { id: params.id } });
   return Response.json(null, { status: 200 });
 }
+
+export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
+  await assertEditor();
+  const { speaker } = await request.json();
+
+  const message = await prisma.message.update({ where: { id: params.id }, data: { speaker } });
+  return Response.json({ message });
+}

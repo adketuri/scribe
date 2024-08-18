@@ -2,7 +2,7 @@ import { NextRequest } from 'next/server';
 import { assertEditor } from '@/app/actions/auth';
 import prisma from '@/app/lib/database';
 
-export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
   await assertEditor();
 
   const res = await request.json();
