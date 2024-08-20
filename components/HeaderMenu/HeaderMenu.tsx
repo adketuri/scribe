@@ -4,7 +4,6 @@ import { Menu, Group, Center, Container, Title, Loader, Drawer } from '@mantine/
 import { IconChevronDown } from '@tabler/icons-react';
 import Image from 'next/image';
 import { useHotkeys } from '@mantine/hooks';
-import { useState } from 'react';
 import classes from './HeaderMenu.module.css';
 import { ColorSchemeToggle } from '../ColorSchemeToggle/ColorSchemeToggle';
 import { useLanguage } from '@/app/hooks/useLanguage';
@@ -29,15 +28,12 @@ interface HeaderMenuProps {
 }
 
 export function HeaderMenu({ onClickHeader, onClose, opened = false }: HeaderMenuProps) {
-  // const { language, languages, setLanguage, isLoading } = useLanguage();
-  // const { language, setLanguage } = useLanguage();
-  const [lang, setLanguage] = useState('en');
-  const languages = [{ id: 'en' }, { id: 'ja' }];
+  const { language, languages, setLanguage } = useLanguage();
   const user = useAuth();
 
   useHotkeys([['mod+L', () => setLanguage(language === 'en' ? 'ja' : 'en')]], []);
 
-  // if (isLoading || !language) return <Loader />;
+  if (!languages) return <Loader />;
   const links: HeaderLink[] = [
     {
       label: language,
