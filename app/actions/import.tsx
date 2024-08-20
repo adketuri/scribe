@@ -64,6 +64,25 @@ export async function importDialogue(state: any, formData: FormData) {
     const updatedDialogue = input.find((d) => d.sequence === sequence.name);
     if (!updatedDialogue) throw new Error('Existing dialogue cannot be found again?');
 
+    // check if we need to actually modify this message
+    let same = true;
+    if (updatedDialogue.messages.length !== sequence.messages.length) {
+      same = false;
+    } else {
+      for (let i = 0; i < updatedDialogue.messages.length; i += 1) {
+        const updatedText = updatedDialogue.messages[i].text.en;
+        const existingText = sequence.messages[i].texts.find((t) => t.languageId === 'en')?.text;
+        if (existingText !== updatedText) {
+          same = false;
+          break;
+        }
+      }
+    }
+    if (same) {
+      console.log('  Message contents are identical, skipping');
+      continue; // We'll skip this sequence if all messages are identical in english
+    }
+
     // delete all existing
     const deleteResult = await prisma.message.deleteMany({ where: { sequenceId: sequence.id } });
     console.log('  Deleted existing messages', deleteResult);

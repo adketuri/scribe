@@ -19,6 +19,7 @@ const secondaryNames = [
   [
     'Tulron Outskirts',
     'Abandoned Village',
+    'Alcuria (Reene)',
     'Tulron Village',
     'Tulron Mines',
     'Tulron Train',

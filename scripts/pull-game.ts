@@ -2,6 +2,10 @@ import { promises as fs } from 'fs';
 import * as path from 'path';
 import { Dialogue } from '@/types/dialogue';
 
+function isMessage(value: string): boolean {
+  return value.includes('show_message' || 'chat' || 'show_choice');
+}
+
 async function readFiles(initialDir: string): Promise<Dialogue[]> {
   const dialogues: Dialogue[] = [];
 
@@ -17,7 +21,7 @@ async function readFiles(initialDir: string): Promise<Dialogue[]> {
           const data = await fs.readFile(filePath, 'utf8');
           const lines = data.split('\n');
           // eslint-disable-next-line no-continue
-          if (!lines.some((l) => l.includes('show_message'))) continue;
+          if (!lines.some(isMessage)) continue;
 
           // show_message("Your arrogance will be your downfall.", esteri)
           const context = lines.find((l) => l.includes('Context:'));
@@ -26,19 +30,17 @@ async function readFiles(initialDir: string): Promise<Dialogue[]> {
           dialogues.push({
             context: context?.split(':')[1].trim() || 'missing',
             sequence: sequence?.split(':')[1].trim() || 'missing',
-            messages: lines
-              .filter((l) => l.startsWith('show_message'))
-              .map((l) => {
-                const split = l.split('"');
-                let speaker = 'noone';
-                if (split[2].includes(',')) {
-                  speaker = split[2].split(',')[1].trim().replace(')', '');
-                }
-                return {
-                  speaker,
-                  text: { en: split[1] },
-                };
-              }),
+            messages: lines.filter(isMessage).map((l) => {
+              const split = l.split('"');
+              let speaker = 'noone';
+              if (split[2].includes(',')) {
+                speaker = split[2].split(',')[1].trim().replace(')', '');
+              }
+              return {
+                speaker,
+                text: { en: split[1] },
+              };
+            }),
           });
         } else if (file === 'chatter.json') {
           const data = await fs.readFile(filePath, 'utf8');
