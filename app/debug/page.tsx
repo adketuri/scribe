@@ -6,8 +6,6 @@ import { useLanguage } from '../hooks/useLanguage';
 const InnerComponent = () => {
   const { language, setLanguage } = useLanguage();
 
-  console.log('Render');
-
   return (
     <>
       {language}

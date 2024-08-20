@@ -5,8 +5,9 @@ import { GetLanguagesResponse } from '@/types/api';
 import { fetcher } from '../lib/fetcher';
 import { LanguageCode } from '@/types/dialogue';
 
+const cookieKey = 'lang';
+
 const createLanguageStore = () => {
-  const cookieKey = 'lang';
   let currentLanguage = getCookie(cookieKey, 'en');
   const listeners = new Set();
 

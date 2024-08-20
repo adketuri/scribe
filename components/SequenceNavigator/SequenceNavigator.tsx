@@ -4,6 +4,7 @@ import { Button, Group } from '@mantine/core';
 import { IconArrowLeft, IconArrowRight } from '@tabler/icons-react';
 import useSWR from 'swr';
 import { Sequence } from '@prisma/client';
+import { useHotkeys } from '@mantine/hooks';
 import classes from './SequenceNavigator.module.css';
 import { GetSequencesResponse } from '@/types/api';
 import { fetcher } from '@/app/lib/fetcher';
@@ -29,6 +30,10 @@ export function SequenceNavigator({ onOpenTableOfContents }: SequenceNavigatorPr
   const sequenceName = useHashedSequence();
   const previous = getSequence(-1, sequenceName, data?.sequences);
   const next = getSequence(1, sequenceName, data?.sequences);
+
+  useHotkeys([['mod+ArrowLeft', () => previous && window.location.replace(`/#${previous}`)]], []);
+  useHotkeys([['mod+ArrowRight', () => next && window.location.replace(`/#${next}`)]], []);
+
   return (
     <Group justify="space-between" className={classes.group}>
       <Button

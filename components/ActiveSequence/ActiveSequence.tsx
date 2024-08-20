@@ -4,7 +4,7 @@ import { Box, Card, Container, Grid, Blockquote, Loader, Button } from '@mantine
 import useSWR from 'swr';
 import { IconPlus } from '@tabler/icons-react';
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useHashedSequence } from '@/app/hooks/useHashedSequence';
 import { fetcher } from '@/app/lib/fetcher';
 import { GetSequenceResponse } from '@/types/api';
@@ -14,12 +14,6 @@ import { SequenceSpeaker } from '../SequenceSpeaker/SequenceSpeaker';
 
 export function ActiveSequence() {
   const { language } = useLanguage();
-  console.log('!AK lang', language);
-
-  useEffect(() => {
-    console.log('!AK goo Language changed:', language);
-  }, [language]);
-
   const localize = language && language !== 'en';
   const sequenceName = useHashedSequence();
 
