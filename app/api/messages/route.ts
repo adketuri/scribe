@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { assertEditor } from '@/app/actions/auth';
 import prisma from '@/app/lib/database';
 
-export const CreateMessageSchema = z.object({
+const CreateMessageSchema = z.object({
   sequenceId: z.string(),
 });
 

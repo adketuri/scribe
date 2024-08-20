@@ -10,10 +10,6 @@ import { GetSequencesResponse } from '@/types/api';
 import { useHashedSequence } from '@/app/hooks/useHashedSequence';
 import { useAuth } from '@/app/hooks/useAuth';
 
-// const links = [
-//   { label: 'Act I', link: '#usage', order: 1 },
-// ];
-
 const secondaryNames = [
   ['Misc'],
   [

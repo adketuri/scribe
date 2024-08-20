@@ -14,7 +14,7 @@ import { SequenceSpeaker } from '../SequenceSpeaker/SequenceSpeaker';
 
 export function ActiveSequence() {
   const { language } = useLanguage();
-  const localize = language && language?.id !== 'en';
+  const localize = language && language !== 'en';
   const sequenceName = useHashedSequence();
 
   const { data, error, mutate } = useSWR<GetSequenceResponse>(
@@ -52,7 +52,7 @@ export function ActiveSequence() {
             </Grid.Col>
             {localize && (
               <Grid.Col span={localize ? 5 : 10}>
-                <SequenceMessage texts={texts} languageId={language.id} messageId={id} editable />
+                <SequenceMessage texts={texts} languageId={language} messageId={id} editable />
               </Grid.Col>
             )}
           </Grid>

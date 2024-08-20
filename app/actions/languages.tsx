@@ -2,7 +2,6 @@
 
 import axios from 'axios';
 import { GetLanguagesResponse } from '@/types/api';
-import { LanguageStore } from '../hooks/useLanguage';
 import { LanguageCode } from '@/types/dialogue';
 
 export async function getServerLanguages() {

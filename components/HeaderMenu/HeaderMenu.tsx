@@ -8,6 +8,7 @@ import { ColorSchemeToggle } from '../ColorSchemeToggle/ColorSchemeToggle';
 import { useLanguage } from '@/app/hooks/useLanguage';
 import { useAuth } from '@/app/hooks/useAuth';
 import { TableOfContents } from '../TableOfContents/TableOfContents';
+import { LanguageCode } from '@/types/dialogue';
 
 interface HeaderLink {
   label: string;
@@ -31,9 +32,9 @@ export function HeaderMenu({ onClickHeader, onClose, opened = false }: HeaderMen
   if (isLoading || !language) return <Loader />;
   const links: HeaderLink[] = [
     {
-      label: language.id,
+      label: language,
       links: languages!.map((lang) => ({
-        onClick: () => setLanguage(lang),
+        onClick: () => setLanguage(lang.id as LanguageCode),
         label: lang.id,
       })),
     },

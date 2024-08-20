@@ -14864,6 +14864,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-use-cookie@npm:^1.6.1":
+  version: 1.6.1
+  resolution: "react-use-cookie@npm:1.6.1"
+  peerDependencies:
+    react: ">=16.8"
+  checksum: 10c0/76d2bc2ce2ee55d3c4753402ff183e5eeaed9b3ff2ec7e9f51ce118ce27c5937f541fb60c4aae822c76b463d4dbec1402176034da845a10e112962a594603c10
+  languageName: node
+  linkType: hard
+
 "react@npm:19.0.0-rc-2d2cc042-20240809":
   version: 19.0.0-rc-2d2cc042-20240809
   resolution: "react@npm:19.0.0-rc-2d2cc042-20240809"
@@ -15532,6 +15541,7 @@ __metadata:
     prisma: "npm:^5.18.0"
     react: "npm:19.0.0-rc-2d2cc042-20240809"
     react-dom: "npm:19.0.0-rc-2d2cc042-20240809"
+    react-use-cookie: "npm:^1.6.1"
     server-only: "npm:^0.0.1"
     storybook: "npm:^8.1.10"
     storybook-dark-mode: "npm:^4.0.2"
