@@ -3,7 +3,7 @@
 import { Button } from '@mantine/core';
 import { useLanguage } from '../hooks/useLanguage';
 
-export default function DebugPage() {
+const InnerComponent = () => {
   const { language, setLanguage } = useLanguage();
 
   console.log('Render');
@@ -11,7 +11,18 @@ export default function DebugPage() {
   return (
     <>
       {language}
-      <Button onClick={() => setLanguage('ja')}>Set</Button>
+      <Button onClick={() => setLanguage(language === 'en' ? 'ja' : 'en')}>Set</Button>
+    </>
+  );
+};
+export default function DebugPage() {
+  return (
+    <>
+      <InnerComponent />
+      <InnerComponent />
+      <InnerComponent />
+      <InnerComponent />
+      <InnerComponent />
     </>
   );
 }
