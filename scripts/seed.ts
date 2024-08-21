@@ -3,7 +3,7 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-export const RESERVED_SEQUENCE_NAMES = ['speakers', 'ui', 'items', 'skills'];
+export const RESERVED_SEQUENCE_NAMES = ['speakers', 'ui', 'items', 'skills', 'file'];
 
 async function main() {
   try {
@@ -16,6 +16,16 @@ async function main() {
   }
 
   try {
+    await prisma.sequence.createMany({
+      data: [
+        {
+          name: 'file_window',
+          context: 'File operation window text',
+          editable: true,
+        },
+        { name: 'input_window', context: 'Input options', editable: true },
+      ],
+    });
     await prisma.sequence.createMany({
       data: [
         {

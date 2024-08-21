@@ -52,7 +52,13 @@ export function ActiveSequence() {
             </Grid.Col>
             {localize && (
               <Grid.Col span={localize ? 5 : 10}>
-                <SequenceMessage texts={texts} languageId={language} messageId={id} editable />
+                <SequenceMessage
+                  texts={texts}
+                  languageId={language}
+                  messageId={id}
+                  mutate={mutate}
+                  editable
+                />
               </Grid.Col>
             )}
           </Grid>
