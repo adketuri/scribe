@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
       sequenceId: validated.sequenceId,
       order: 0,
       speaker: '',
-      texts: { create: { languageId: 'en', text: 'New Message', checked: false } },
+      texts: { create: { languageId: 'en', text: '', checked: false } },
     },
   });
   return Response.json({ message });

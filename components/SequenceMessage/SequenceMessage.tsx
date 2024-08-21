@@ -11,12 +11,14 @@ interface SequenceMessageProps {
   messageId: string;
   mutate: () => void;
   editable?: boolean;
+  deletable?: boolean;
 }
 export function SequenceMessage({
   texts,
   languageId: language,
   messageId,
   editable,
+  deletable,
   mutate,
 }: SequenceMessageProps) {
   const textRecord = texts.find((t) => t.languageId === language);
@@ -54,7 +56,14 @@ export function SequenceMessage({
     () => () => {
       const { text: textRef, debouncedText: debouncedTextRef } = cleanupRef.current;
       if (textRef !== debouncedTextRef) {
-        axios.patch(`api/texts/${id}`, { text: textRef }).then(mutate).catch(console.error);
+        if (id) {
+          axios.patch(`api/texts/${id}`, { text: textRef }).then(mutate).catch(console.error);
+        } else {
+          axios
+            .post('api/texts', { text: textRef, languageId: language, messageId })
+            .then(mutate)
+            .catch(console.error);
+        }
       } else {
         mutate();
       }
@@ -68,17 +77,19 @@ export function SequenceMessage({
         <Box flex={1}>
           <Textarea value={text} onChange={(e) => setText(e.target.value)} autosize />
         </Box>
-        <Button
-          color="red"
-          disabled={loading}
-          onClick={() => {
-            setLoading(true);
-            axios.delete(`api/messages/${messageId}`).then(mutate);
-          }}
-          px={5}
-        >
-          <IconX />
-        </Button>
+        {deletable && (
+          <Button
+            color="red"
+            disabled={loading}
+            onClick={() => {
+              setLoading(true);
+              axios.delete(`api/messages/${messageId}`).then(mutate);
+            }}
+            px={5}
+          >
+            <IconX />
+          </Button>
+        )}
       </Group>
     );
   }

@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Container, Divider, FileInput, Space } from '@mantine/core';
+import { Box, Button, Container, FileInput, Space } from '@mantine/core';
 import axios from 'axios';
 import { useActionState, useEffect, useState } from 'react';
 import { redirect, useSearchParams } from 'next/navigation';
@@ -8,6 +8,8 @@ import { GetOutputResponse, TransformedOutput } from '@/types/api';
 import { useLanguage } from '@/app/hooks/useLanguage';
 import { logout } from '@/app/actions/auth';
 import { importDialogue } from '@/app/actions/import';
+import { AddLanguage } from '../AddLanguage/AddLanguage';
+import { AddSequence } from '../AddSequence/AddSequence';
 
 async function download(id: string) {
   const response = await axios.get<GetOutputResponse>(`api/output/${id}`, {
@@ -56,7 +58,6 @@ export default function Admin() {
           Download ({id})
         </Button>
       ))}
-      <Divider />
       <form action={action}>
         <FileInput
           accept="application/json"
@@ -71,6 +72,12 @@ export default function Admin() {
           {pending ? 'Submitting...' : 'Upload'}
         </Button>
       </form>
+      <Box mt={20}>
+        <AddLanguage />
+      </Box>
+      <Box mt={20}>
+        <AddSequence />
+      </Box>{' '}
       <form action={logoutAction}>
         <Button type="submit" mt="xl" disabled={logoutPending}>
           {logoutPending ? 'Submitting...' : 'Logout'}

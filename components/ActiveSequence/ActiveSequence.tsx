@@ -46,6 +46,7 @@ export function ActiveSequence() {
                 texts={texts}
                 languageId="en"
                 messageId={id}
+                deletable={sequence.editable}
                 editable={sequence.editable && !localize}
                 mutate={mutate}
               />

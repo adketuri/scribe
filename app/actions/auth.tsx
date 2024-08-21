@@ -40,6 +40,14 @@ export async function assertEditor() {
   }
 }
 
+export async function assertAdmin() {
+  const cookie = cookies().get('session')?.value;
+  const session = (await decrypt(cookie)) as SessionPayload;
+  if (!session?.username || session?.role !== 'admin') {
+    throw new Error('Unauthorized access');
+  }
+}
+
 export async function logout() {
   deleteSession();
   redirect('/login');
