@@ -1,7 +1,7 @@
 'use client';
 
-import { Box, Card, Container, Grid, Blockquote, Loader, Button } from '@mantine/core';
-import useSWR from 'swr';
+import { Box, Card, Container, Grid, Blockquote, Loader, Button, Group } from '@mantine/core';
+import useSWRImmutable from 'swr';
 import { IconPlus } from '@tabler/icons-react';
 import axios from 'axios';
 import { useState } from 'react';
@@ -11,26 +11,34 @@ import { GetSequenceResponse } from '@/types/api';
 import { useLanguage } from '@/app/hooks/useLanguage';
 import { SequenceMessage } from '../SequenceMessage/SequenceMessage';
 import { SequenceSpeaker } from '../SequenceSpeaker/SequenceSpeaker';
+import { useAuth } from '@/app/hooks/useAuth';
+import { TranslateButton } from '../TranslateButton/TranslateButton';
 
 export function ActiveSequence() {
   const { language } = useLanguage();
   const localize = language && language !== 'en';
   const sequenceName = useHashedSequence();
 
-  const { data, error, mutate } = useSWR<GetSequenceResponse>(
+  const { data, error, mutate } = useSWRImmutable<GetSequenceResponse>(
     `/api/sequences/${sequenceName}`,
     fetcher
   );
 
   const [loading, setLoading] = useState(false);
+  const user = useAuth();
 
   if (error) return <Container>OOPS</Container>;
   if (!data?.sequence) return <Loader />;
 
   const { sequence } = data;
   return (
-    <Box py={100}>
-      <Blockquote color="blue">{sequence.context}</Blockquote>
+    <Box py={100} key={language}>
+      <Group align="start">
+        <Blockquote flex={1} color="blue">
+          {sequence.context}
+        </Blockquote>
+        {user?.role === 'admin' && <TranslateButton sequenceName={sequenceName} />}
+      </Group>
       {sequence.messages.map(({ speaker, texts, id }) => (
         <Card shadow="sm" radius="md" mt={16} withBorder key={id}>
           <Grid>

@@ -22,9 +22,12 @@ export function SequenceMessage({
   mutate,
 }: SequenceMessageProps) {
   const textRecord = texts.find((t) => t.languageId === language);
+  useEffect(() => {
+    setText(textRecord?.text || '');
+  }, [textRecord?.text]);
+  const [text, setText] = useState(textRecord?.text || '');
 
   const [id, setId] = useState(textRecord?.id);
-  const [text, setText] = useState(textRecord?.text || '');
   const [debouncedText] = useDebouncedValue(text, 1000);
   const [loading, setLoading] = useState(false);
 
