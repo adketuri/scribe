@@ -9,7 +9,7 @@ export interface GetOutputResponse {
 }
 
 export type TransformedMessage = Omit<Message, 'id' | 'sequenceId' | 'order'> & { text: string };
-export type TransformedOutput = Record<string, Array<TransformedMessage>>;
+export type TransformedOutput = Record<string, Record<string, string> | Array<TransformedMessage>>;
 
 export interface GetSequencesResponse {
   sequences: Sequence[];

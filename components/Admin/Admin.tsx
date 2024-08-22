@@ -18,11 +18,20 @@ async function download(id: string) {
 
   const transformed: TransformedOutput = {};
   response.data.sequences.forEach((sequence) => {
-    transformed[sequence.name] = sequence.messages.map((message) => ({
-      speaker: message.speaker,
-      text: message.texts.find((text) => text.languageId === id)!.text,
-    }));
+    if (sequence.editable) {
+      transformed[sequence.name] = {};
+      sequence.messages.forEach((message) => {
+        (transformed[sequence.name] as Record<string, string>)[message.speaker] =
+          message.texts.find((text) => text.languageId === id)!.text;
+      });
+    } else {
+      transformed[sequence.name] = sequence.messages.map((message) => ({
+        speaker: message.speaker,
+        text: message.texts.find((text) => text.languageId === id)!.text,
+      }));
+    }
   });
+
   const data = new Blob([JSON.stringify(transformed, null, 2)], { type: 'application/json' });
   const href = window.URL.createObjectURL(data);
   const link = document.createElement('a');
