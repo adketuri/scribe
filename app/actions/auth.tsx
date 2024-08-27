@@ -16,7 +16,7 @@ export async function login(state: FormState, formData: FormData) {
   }
 
   const { username, password } = validatedFields.data;
-  if (password !== process.env.LOGIN_PASSWORD || username !== process.env.LOGIN_USERNAME) {
+  if (password !== process.env.ADMIN_LOGIN_PASSWORD || username !== process.env.ADMIN_LOGIN_USERNAME) {
     return { message: 'Username or password is incorrect.' };
   }
 

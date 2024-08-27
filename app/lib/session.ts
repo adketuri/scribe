@@ -39,7 +39,7 @@ export async function createSession(username: string) {
   const session = await encrypt({
     username,
     expiresAt,
-    role: 'admin',
+    role: username === process.env.ADMIN_LOGIN_USERNAME ? 'admin' : 'viewer',
     languages: { en: true, ja: true },
   });
 
