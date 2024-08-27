@@ -74,11 +74,15 @@ export function SequenceMessage({
     []
   );
 
-  if (editable) {
+  if (language !== 'en') {
     return (
       <Group>
         <Box flex={1}>
-          <Textarea value={text} onChange={(e) => setText(e.target.value)} autosize />
+          {editable ? (
+            <Textarea value={text} onChange={(e) => setText(e.target.value)} autosize />
+          ) : (
+            <Box>{text}</Box>
+          )}
         </Box>
         {deletable && (
           <Button

@@ -66,7 +66,7 @@ export function ActiveSequence() {
                   languageId={language}
                   messageId={id}
                   mutate={mutate}
-                  editable
+                  editable={user?.role !== 'viewer'}
                 />
               </Grid.Col>
             )}

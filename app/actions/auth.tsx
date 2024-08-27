@@ -16,7 +16,13 @@ export async function login(state: FormState, formData: FormData) {
   }
 
   const { username, password } = validatedFields.data;
-  if (password !== process.env.ADMIN_LOGIN_PASSWORD || username !== process.env.ADMIN_LOGIN_USERNAME) {
+  console.log(username, password);
+  console.log(process.env.GUEST_LOGIN_USERNAME, process.env.GUEST_LOGIN_PASSWORD);
+  const isAdmin =
+    password === process.env.ADMIN_LOGIN_PASSWORD && username === process.env.ADMIN_LOGIN_USERNAME;
+  const isGuest =
+    password === process.env.GUEST_LOGIN_PASSWORD && username === process.env.GUEST_LOGIN_USERNAME;
+  if (!isAdmin && !isGuest) {
     return { message: 'Username or password is incorrect.' };
   }
 
