@@ -40,6 +40,16 @@ export async function importDialogue(state: any, formData: FormData) {
   console.log('New sequence count: ', newInputs.length);
 
   if (newInputs.length > 0) {
+    newInputs.forEach((newInput) => {
+      if (
+        newInputs.reduce(
+          (count, innerInput) => (newInput.sequence === innerInput.sequence ? count + 1 : count),
+          0
+        ) > 1
+      ) {
+        throw new Error(`Duplicate sequence: ${newInput.sequence}`);
+      }
+    });
     const sequences = await prisma.sequence.createMany({
       data: newInputs.map((dialog) => ({ context: dialog.context, name: dialog.sequence })),
     });

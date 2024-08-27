@@ -5,7 +5,19 @@ import prisma from '@/app/lib/database';
 export async function GET() {
   await assertAuthenticated();
   const sequences = await prisma.sequence.findMany({ orderBy: { name: 'asc' } });
-  return Response.json({ sequences });
+
+  return Response.json({
+    sequences: sequences.sort((a, b) => {
+      const aParts = a.name.split('.').map(Number);
+      const bParts = b.name.split('.').map(Number);
+      for (let j = 0; j < 3; j += 1) {
+        if (aParts[j] !== bParts[j]) {
+          return aParts[j] - bParts[j];
+        }
+      }
+      return 0;
+    }),
+  });
 }
 
 export async function POST(request: NextRequest) {

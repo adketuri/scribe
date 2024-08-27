@@ -21,6 +21,17 @@ const secondaryNames = [
     'Tulron Train',
     'N/A',
   ],
+  [
+    'Tulron Flashback',
+    'Slogstomps',
+    'Arkor/Roughlands',
+    'Arkor/Aqueduct',
+    'Jigoku',
+    'Arkor Tower',
+    'Oskari Flashback',
+    'Arkor Conclusion',
+    'N/A',
+  ],
 ];
 
 interface TableOfContentsProps {
@@ -43,35 +54,38 @@ export function TableOfContents({ onLinkSelected }: TableOfContentsProps) {
     order: 1,
   }));
 
-  const linkGroups: Array<Array<Link>> = [];
+  const linkGroups: Array<Array<Array<Link>>> = [];
   const specialLinkGroup: Array<Link> = [];
   links?.forEach((item) => {
     if (!item.label.includes('.')) {
       specialLinkGroup.push(item);
     } else {
       const group = item.label.split('.');
-      const groupNum = parseInt(group[1], 10);
-      if (groupNum > linkGroups.length) {
-        linkGroups.push([]);
+      const primary = parseInt(group[0], 10);
+      const secondary = parseInt(group[1], 10);
+      if (primary > linkGroups.length) {
+        linkGroups.push([[]]);
       }
-      linkGroups[groupNum - 1].push(item);
+      if (secondary > linkGroups[primary - 1].length) {
+        linkGroups[primary - 1].push([]);
+      }
+      linkGroups[primary - 1][secondary - 1].push(item);
     }
   });
 
   const session = useAuth();
-
   return (
     <>
       <TableOfContentsSection
         title="Act I"
         primary={1}
-        linkGroups={linkGroups}
+        linkGroups={linkGroups[0]}
         onLinkSelected={onLinkSelected}
       />
       <TableOfContentsSection
         title="Act II"
         primary={2}
-        linkGroups={linkGroups}
+        linkGroups={linkGroups[1]}
         onLinkSelected={onLinkSelected}
       />
       {session?.role !== 'viewer' && (
@@ -125,7 +139,9 @@ function TableOfContentsSection({
                   href={`#${item.link}`}
                   onClick={onLinkSelected}
                   key={item.label}
-                  className={cx(classes.link, { [classes.linkActive]: sequenceName === item.link })}
+                  className={cx(classes.link, {
+                    [classes.linkActive]: sequenceName === item.link,
+                  })}
                   style={{ paddingLeft: `calc(${item.order} * var(--mantine-spacing-md))` }}
                 >
                   <Text size="sm">{item.label}</Text>

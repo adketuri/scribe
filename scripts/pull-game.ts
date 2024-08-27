@@ -3,7 +3,9 @@ import * as path from 'path';
 import { Dialogue } from '@/types/dialogue';
 
 function isMessage(value: string): boolean {
-  return value.includes('show_message' || 'chat' || 'show_choice');
+  return (
+    value.startsWith('show_message') || value.startsWith('chat') || value.startsWith('show_choice')
+  );
 }
 
 async function readFiles(initialDir: string): Promise<Dialogue[]> {
@@ -33,8 +35,12 @@ async function readFiles(initialDir: string): Promise<Dialogue[]> {
             messages: lines.filter(isMessage).map((l) => {
               const split = l.split('"');
               let speaker = 'noone';
-              if (split[2].includes(',')) {
-                speaker = split[2].split(',')[1].trim().replace(')', '');
+              try {
+                if (split[2].includes(',')) {
+                  speaker = split[2].split(',')[1].trim().replace(')', '');
+                }
+              } catch (e) {
+                console.log('No speaker for line', l);
               }
               return {
                 speaker,
@@ -69,7 +75,16 @@ async function main() {
   const dialogues = await readFiles('../starlessumbra/starlessumbra/datafiles/');
   const markedDialogues = dialogues
     .filter((d) => d.sequence)
-    .sort((d1, d2) => d1.sequence!.localeCompare(d2.sequence!))
+    .sort((a, b) => {
+      const aParts = a.sequence.split('.').map(Number);
+      const bParts = b.sequence.split('.').map(Number);
+      for (let i = 0; i < 3; i += 1) {
+        if (aParts[i] !== bParts[i]) {
+          return aParts[i] - bParts[i];
+        }
+      }
+      return 0;
+    })
     .filter((d) => d.sequence !== 'missing');
   console.log(`${markedDialogues.length}/${dialogues.length} events marked.`);
   await fs.writeFile('../su-output.json', JSON.stringify(markedDialogues, null, 2));
