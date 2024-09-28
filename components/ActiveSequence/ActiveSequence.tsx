@@ -16,8 +16,9 @@ import { TranslateButton } from '../TranslateButton/TranslateButton';
 
 export function ActiveSequence() {
   const { language } = useLanguage();
-  const localize = language && language !== 'en';
   const sequenceName = useHashedSequence();
+  const editKey = !sequenceName.includes('.') && language === 'en';
+  const localize = Boolean(language && language !== 'en');
 
   const { data, error, mutate } = useSWRImmutable<GetSequenceResponse>(
     `/api/sequences/${sequenceName}`,
@@ -43,11 +44,7 @@ export function ActiveSequence() {
         <Card shadow="sm" radius="md" mt={16} withBorder key={id}>
           <Grid>
             <Grid.Col span={2}>
-              <SequenceSpeaker
-                messageId={id}
-                editable={sequence.editable && !localize}
-                speaker={speaker}
-              />
+              <SequenceSpeaker messageId={id} editable={editKey} speaker={speaker} />
             </Grid.Col>
             <Grid.Col span={localize ? 5 : 10}>
               <SequenceMessage
@@ -73,7 +70,7 @@ export function ActiveSequence() {
           </Grid>
         </Card>
       ))}
-      {sequence.editable && !localize && (
+      {user?.role === 'admin' && (
         <Button
           mt={15}
           disabled={loading}

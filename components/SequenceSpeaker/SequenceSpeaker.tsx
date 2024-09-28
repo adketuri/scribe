@@ -3,9 +3,10 @@ import { useDebouncedValue } from '@mantine/hooks';
 import axios from 'axios';
 import { useState, useRef, useEffect } from 'react';
 
-function formatSpeaker(speaker: string): string | undefined {
+function formatSpeaker(speaker: string, editable: boolean): string | undefined {
   if (speaker === '') return undefined;
   if (speaker === 'noone') return '';
+  if (editable) return speaker;
   return `${speaker[0].charAt(0).toUpperCase() + speaker.slice(1)}`;
 }
 
@@ -37,5 +38,5 @@ export function SequenceSpeaker({
     return <Textarea value={speaker} onChange={(e) => setSpeaker(e.target.value)} autosize />;
   }
 
-  return <Text c="dimmed">{formatSpeaker(speaker)}</Text>;
+  return <Text c="dimmed">{formatSpeaker(speaker, editable)}</Text>;
 }

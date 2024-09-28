@@ -17,6 +17,7 @@
     "test": "npm run prettier:check && npm run lint && npm run typecheck && npm run jest",
     "storybook": "storybook dev -p 6006",
     "storybook:build": "storybook build",
+    "db:deploy": "npx prisma migrate deploy",
     "db:seed": "npx ts-node scripts/seed.ts",
     "db:reset": "npx prisma db push --force-reset",
     "db:generate": "npx prisma generate",

@@ -12,7 +12,8 @@ async function main() {
     });
     console.log('Created languages: ', lang);
   } catch (e) {
-    console.log('Languages exist, skipping');
+    console.error(e);
+    console.log('Error with languages, skipping');
   }
 
   try {
@@ -40,7 +41,8 @@ async function main() {
     });
     console.log('Created editables');
   } catch (e) {
-    console.log('Editable sequences exist, skipping');
+    console.error(e)
+    console.log('Error with sequences, skipping');
   }
 }
 

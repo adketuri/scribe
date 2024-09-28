@@ -79,20 +79,20 @@ export function TableOfContents({ onLinkSelected }: TableOfContentsProps) {
       <TableOfContentsSection
         title="Act I"
         primary={1}
-        linkGroups={linkGroups[0]}
+        linkGroups={linkGroups[0] || []}
         onLinkSelected={onLinkSelected}
       />
       <TableOfContentsSection
         title="Act II"
         primary={2}
-        linkGroups={linkGroups[1]}
+        linkGroups={linkGroups[1] || []}
         onLinkSelected={onLinkSelected}
       />
       {session?.role !== 'viewer' && (
         <TableOfContentsSection
           title="Misc"
           primary={0}
-          linkGroups={[specialLinkGroup]}
+          linkGroups={[specialLinkGroup] || []}
           onLinkSelected={onLinkSelected}
         />
       )}

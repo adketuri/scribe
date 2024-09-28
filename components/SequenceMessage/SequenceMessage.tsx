@@ -74,7 +74,7 @@ export function SequenceMessage({
     []
   );
 
-  if (language !== 'en') {
+  if (language !== 'en' || (language === 'en' && editable)) {
     return (
       <Group>
         <Box flex={1}>
