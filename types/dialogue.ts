@@ -11,3 +11,20 @@ export interface Dialogue {
   context: string;
   messages: Message[];
 }
+
+export interface LocalizedItem {
+  key: string;
+  name: string;
+  description?: string;
+}
+
+export interface DialogueFile {
+  dialogues: Dialogue[];
+  items: LocalizedItem[];
+  skills: LocalizedItem[];
+  augments: LocalizedItem[];
+  maps: LocalizedItem[];
+  passives: LocalizedItem[];
+  monsters: LocalizedItem[];
+  statuses: LocalizedItem[];
+}

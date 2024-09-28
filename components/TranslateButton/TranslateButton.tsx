@@ -35,6 +35,7 @@ export const TranslateButton: FC<TranslateButtonProps> = ({ sequenceName }) => {
             axios
               .post(`api/sequences/${sequenceName}/autotranslate`, { override: checked })
               .then(() => {
+                setChecked(false);
                 mutate();
                 close();
               });

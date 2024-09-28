@@ -29,9 +29,11 @@ export function ActiveSequence() {
   const user = useAuth();
 
   if (error) return <Container>OOPS</Container>;
+
   if (!data?.sequence) return <Loader />;
 
   const { sequence } = data;
+
   return (
     <Box py={100} key={language}>
       <Group align="start">
@@ -70,7 +72,7 @@ export function ActiveSequence() {
           </Grid>
         </Card>
       ))}
-      {user?.role === 'admin' && (
+      {user?.role === 'admin' && editKey && (
         <Button
           mt={15}
           disabled={loading}

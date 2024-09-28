@@ -4,13 +4,32 @@
 
 import { redirect } from 'next/navigation';
 import prisma from '../lib/database';
-import { Dialogue, TextRecord } from '@/types/dialogue';
-import { RESERVED_SEQUENCE_NAMES } from '@/scripts/seed';
+import { DialogueFile, LocalizedItem, TextRecord } from '@/types/dialogue';
 
 export async function importDialogue(state: any, formData: FormData) {
   const inputFile = formData.get('dialogue') as File;
-  const input: Dialogue[] = JSON.parse(await inputFile.text());
+  const parsedFile: DialogueFile = JSON.parse(await inputFile.text());
 
+  const {
+    dialogues: input,
+    items,
+    skills,
+    augments,
+    maps,
+    passives,
+    monsters,
+    statuses,
+  } = parsedFile;
+
+  await importSpecial('items', items);
+  await importSpecial('skills', skills);
+  await importSpecial('augments', augments);
+  await importSpecial('maps', maps);
+  await importSpecial('passives', passives);
+  await importSpecial('monsters', monsters);
+  await importSpecial('statuses', statuses);
+
+  // DO DIALOGUES
   const sequenceRecords = await prisma.sequence.findMany({
     include: { messages: { include: { texts: true } } },
   });
@@ -23,7 +42,7 @@ export async function importDialogue(state: any, formData: FormData) {
 
   const removedSequences = sequenceRecords
     .filter((s) => !input.some((d) => d.sequence === s.name))
-    .filter((s) => !RESERVED_SEQUENCE_NAMES.includes(s.name))
+    .filter((s) => s.name.includes('.'))
     .map((s) => s.name);
   console.log('To remove record count: ', removedSequences.length);
 
@@ -114,6 +133,7 @@ export async function importDialogue(state: any, formData: FormData) {
     }
   }
 
+  // DO ITEMS
   return redirect('/admin?reset=1');
 }
 async function createMessageAndTextForSequence(
@@ -140,4 +160,45 @@ async function createMessageAndTextForSequence(
   });
 
   console.log(`    Created text ${i + 1}: `, textRecord);
+}
+
+async function importSpecial(name: string, items: LocalizedItem[]) {
+  let sequence = await prisma.sequence.findFirst({ where: { name } });
+  if (!sequence) {
+    sequence = await prisma.sequence.create({
+      data: { name, context: `A list of ${name}`, editable: true },
+    });
+  }
+
+  for (const item of items) {
+    // find or create our message for this element
+
+    for (const itemData of [
+      [item.key, item.name],
+      [`${item.key}_desc`, item.description],
+    ]) {
+      let order = 0;
+
+      const key = itemData[0];
+      const value = itemData[1];
+      if (!key || !value) continue;
+
+      let message = await prisma.message.findFirst({
+        where: { speaker: key, sequenceId: sequence.id },
+      });
+      if (!message) {
+        message = await prisma.message.create({
+          data: { order, speaker: key, sequenceId: sequence.id },
+        });
+      }
+
+      // we'll delete all associated and just insert en
+      await prisma.text.deleteMany({ where: { messageId: message.id } });
+      await prisma.text.create({
+        data: { text: value, languageId: 'en', messageId: message.id, checked: true },
+      });
+
+      order += 1;
+    }
+  }
 }

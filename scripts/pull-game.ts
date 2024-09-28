@@ -1,6 +1,6 @@
 import { promises as fs } from 'fs';
 import * as path from 'path';
-import { Dialogue } from '@/types/dialogue';
+import { Dialogue, LocalizedItem } from '@/types/dialogue';
 
 function isMessage(value: string): boolean {
   return (
@@ -71,6 +71,23 @@ async function readFiles(initialDir: string): Promise<Dialogue[]> {
   return dialogues;
 }
 
+async function getSpecial(filename: string) {
+  const items = JSON.parse(
+    await fs.readFile(`../starlessumbra/starlessumbra/datafiles/db/${filename}.json`, 'utf8')
+  );
+  let added = 0;
+  const markedItems: LocalizedItem[] = [];
+  Object.entries(items).forEach(([key, value]: [key: string, value: any]) => {
+    const { name, description } = value;
+    if (name) {
+      markedItems.push({ key, name, description });
+      added += 1;
+    }
+  });
+  console.log(`Added ${added} ${filename}`);
+  return markedItems;
+}
+
 async function main() {
   const dialogues = await readFiles('../starlessumbra/starlessumbra/datafiles/');
   const markedDialogues = dialogues
@@ -87,7 +104,23 @@ async function main() {
     })
     .filter((d) => d.sequence !== 'missing');
   console.log(`${markedDialogues.length}/${dialogues.length} events marked.`);
-  await fs.writeFile('../su-output.json', JSON.stringify(markedDialogues, null, 2));
+
+  const items = await getSpecial('items');
+  const skills = await getSpecial('skills');
+  const augments = await getSpecial('augments');
+  const maps = await getSpecial('maps');
+  const passives = await getSpecial('passives');
+  const monsters = await getSpecial('monsters');
+  const statuses = await getSpecial('status_effects');
+
+  await fs.writeFile(
+    '../su-output.json',
+    JSON.stringify(
+      { dialogues: markedDialogues, items, skills, augments, maps, passives, monsters, statuses },
+      null,
+      2
+    )
+  );
   console.log('Done!');
 }
 

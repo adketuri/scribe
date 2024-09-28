@@ -3,8 +3,6 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-export const RESERVED_SEQUENCE_NAMES = ['speakers', 'ui', 'items', 'skills', 'file'];
-
 async function main() {
   try {
     const lang = await prisma.lang.createManyAndReturn({
@@ -35,13 +33,11 @@ async function main() {
           editable: true,
         },
         { name: 'ui', context: 'UI elements in menus', editable: true },
-        { name: 'items', context: 'Item name and descriptions', editable: true },
-        { name: 'skills', context: 'Skill name and descriptions', editable: true },
       ],
     });
     console.log('Created editables');
   } catch (e) {
-    console.error(e)
+    console.error(e);
     console.log('Error with sequences, skipping');
   }
 }
